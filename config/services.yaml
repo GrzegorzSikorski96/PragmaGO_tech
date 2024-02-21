@@ -1,0 +1,9 @@
+services:
+    PragmaGoTech\Interview\Calculator\InterpolatedFeeCalculator:
+        class: PragmaGoTech\Interview\Calculator\InterpolatedFeeCalculator
+        public: true
+        arguments:
+            $feeStructureProvider: '@PragmaGoTech\Interview\Provider\FeeStructureProvider'
+    
+    PragmaGoTech\Interview\Provider\FeeStructureProvider:
+        class: 'PragmaGoTech\Interview\Provider\FeeStructureProvider'
