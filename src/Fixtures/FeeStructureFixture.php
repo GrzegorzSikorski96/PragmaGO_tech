@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Fixtures;
 
-use PragmaGoTech\Interview\Model\Breakpoint;
 use PragmaGoTech\Interview\Model\FeeStructure;
 
 final class FeeStructureFixture
@@ -21,7 +20,7 @@ final class FeeStructureFixture
             $breakpoints = [];
 
             foreach($structure["breakpoints"] as $breakpoint) {
-                $breakpoints[] = new Breakpoint($breakpoint['breakpoint'], $breakpoint['fee']);
+                $breakpoints[$breakpoint['breakpoint']] = $breakpoint['fee'];
             }
 
             $feeStructures[$structure['term']] = new FeeStructure($structure['term'], $breakpoints);

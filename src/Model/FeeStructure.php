@@ -11,9 +11,11 @@ final class FeeStructure
     public function __construct(private int $term, array $breakpoints) {
         $this->breakpoints = $breakpoints;
         
-        usort($this->breakpoints, function (Breakpoint $firstBreakpoint, Breakpoint $secondBreakpoint) {
-            return $secondBreakpoint->getBreakpoint() <=> $firstBreakpoint->getBreakpoint();
-        });
+        krsort($this->breakpoints);
+
+        // usort($this->breakpoints, function (Breakpoint $firstBreakpoint, Breakpoint $secondBreakpoint) {
+        //     return $secondBreakpoint->getBreakpoint() <=> $firstBreakpoint->getBreakpoint();
+        // });
     }
 
     public function getTerm(): int
@@ -26,25 +28,26 @@ final class FeeStructure
         return $this->breakpoints;
     }
 
-    public function getLowerBoundIndex(float $loanValue): int
+    public function getLowerBound(float $loanValue): int
     {
-        foreach ($this->breakpoints as $key => $breakpoint) {
-            if ($breakpoint->getBreakpoint() <= $loanValue) {
-                return $key;
+        foreach ($this->breakpoints as $breakpoint => $fee) {
+            if ($breakpoint <= $loanValue) {
+                return $breakpoint;
             }
         }
 
         return null;
     }
 
-    public function getUpperBoundIndex(float $loanValue): int
+    public function getUpperBound(float $loanValue): int
     {
-        $lowerBoundIndex = $this->getLowerBoundIndex($loanValue);
-
-        if ($lowerBoundIndex - 1 < 0) {
-            return $lowerBoundIndex;
-        }
-
-        return $lowerBoundIndex - 1;
+            $breakpoints = array_keys($this->breakpoints);
+            $lowerBoundIndex = array_search($this->getLowerBound($loanValue), $breakpoints);
+        
+            if ($lowerBoundIndex !== false && $lowerBoundIndex > 0) {
+                return $breakpoints[$lowerBoundIndex - 1];
+            }
+        
+            return $breakpoints[$lowerBoundIndex];
     }
 }

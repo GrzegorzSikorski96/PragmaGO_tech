@@ -34,13 +34,17 @@ class InterpolatedFeeCalculatorTest extends UnitTestCase
 
         // //then
         Assert::assertEquals($expectedFee, $calculatedFee);
+        Assert::assertEquals(0, ($calculatedFee + $givenLoanProposal->amount()) % 5);
+        Assert::assertIsFloat($calculatedFee);
     }
 
     public static function loanProposalWithExpectedValueProvider()
     {
         return [
+            [new LoanProposal(12, 2034,25), 91],
             [new LoanProposal(12, 1000), 50],
             [new LoanProposal(12, 2000), 90],
+            [new LoanProposal(12, 2034,25), 91],
             [new LoanProposal(12, 3000), 90],
             [new LoanProposal(12, 4000), 115],
             [new LoanProposal(12, 5000), 100],

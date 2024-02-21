@@ -30,16 +30,17 @@ final class InterpolatedFeeCalculator implements FeeCalculatorInterface
 
         $feeStructure = $this->feeStructureProvider->provide($loanProposal->term());
 
-        $lowerBound = $feeStructure->getLowerBoundIndex($loanProposal->amount());
-        $upperBound = $feeStructure->getUpperBoundIndex($loanProposal->amount());
+        $lowerBound = $feeStructure->getLowerBound($loanProposal->amount());
+        $upperBound = $feeStructure->getUpperBound($loanProposal->amount());
 
-        $factor = InterpolationCalculator::calculateInterpolationFactor($loanProposal->amount(), $feeStructure->getBreakpoints()[$lowerBound]->getBreakpoint(), $feeStructure->getBreakpoints()[$upperBound]->getBreakpoint());
-        $interpolatedFee = InterpolationCalculator::interpolateFee($feeStructure->getBreakpoints()[$lowerBound]->getFee(), $feeStructure->getBreakpoints()[$upperBound]->getFee(), $factor);
+        $factor = InterpolationCalculator::calculateInterpolationFactor($loanProposal->amount(), $lowerBound, $upperBound);
+        $interpolatedFee = InterpolationCalculator::interpolateFee($feeStructure->getBreakpoints()[$lowerBound], $feeStructure->getBreakpoints()[$upperBound], $factor);
 
         $roundedFee = ceil($interpolatedFee);
 
         $totalAmount = $loanProposal->amount() + $roundedFee;
         $remainder = $totalAmount % 5;
+
         if ($remainder > 0) {
             $roundedFee += 5 - $remainder;
         }
